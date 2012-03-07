@@ -1,0 +1,13 @@
+= Chiliproject Tests
+
+This plugin contains core test using rspec and cucumber.
+
+= Requirements
+
+* OpenProject
+* Rspec
+* Cucumber
+
+== Licence
+
+(c) 2011 - Romano Licker - Finn GmbH
