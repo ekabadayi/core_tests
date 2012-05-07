@@ -211,22 +211,5 @@ describe CustomField do
 
       it { field.should be_valid }
     end
-
-    describe "WITH a list field
-              WITH two translations
-              WITH possible_values beeing empty in a non fallbacked translation" do
-
-      before do
-        field.field_format = 'list'
-        field.translations_attributes = [ { "name" => "Feld",
-                                            "default_value" => "zwei",
-                                            "possible_values" => "eins\nzwei\ndrei",
-                                            "locale" => "de" },
-                                          { "name" => "Field",
-                                            "locale" => "en" } ]
-      end
-
-      it { field.should_not be_valid }
-    end
   end
 end
