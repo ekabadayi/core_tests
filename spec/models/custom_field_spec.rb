@@ -58,6 +58,10 @@ describe CustomField do
         field.name = "Field"
       end
 
+      after do
+        I18n.locale = nil
+      end
+
       it "should return english name when in locale en" do
         I18n.locale = :en
         field.name.should == "Field"
@@ -86,7 +90,7 @@ describe CustomField do
     it { field.name(:en).should == "Field" }
     it { field.name(:de).should == "Feld" }
     it { field.name(:fr).should == "" }
-    it { field.default_value(:en).should == nil }
+    it { I18n.without_fallbacks{field.default_value(:en)}.should == nil }
     it { field.default_value(:de).should == "zwei" }
     it { field.default_value(:fr).should == "" }
     it { field.possible_values(:de).should =~ ["eins", "zwei", "drei"] }
