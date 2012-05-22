@@ -351,6 +351,58 @@ describe User, 'deletion' do
     it_should_behave_like "created associated object"
   end
 
+  describe "WHEN the user has created a changeset" do
+    let(:repository) { Factory.create(:repository) }
+    let(:associated_instance) { Factory.build(:changeset, :repository_id => repository.id,
+                                                          :committer => user.login) }
+
+    let(:associated_class) { Changeset }
+    let(:associations) { [:user] }
+
+    before do
+      Setting.enabled_scm = Setting.enabled_scm << "Filesystem"
+    end
+
+    it_should_behave_like "created journalized associated object"
+  end
+
+  describe "WHEN the user has updated a changeset" do
+    let(:repository) { Factory.create(:repository) }
+    let(:associated_instance) { Factory.build(:changeset, :repository_id => repository.id,
+                                                          :committer => user2.login) }
+
+    let(:associated_class) { Changeset }
+    let(:associations) { [:user] }
+
+    before do
+      Setting.enabled_scm = Setting.enabled_scm << "Filesystem"
+      User.current = user2
+      associated_instance.user = user2
+      associated_instance.save!
+
+      User.current = user # in order to have the content journal created by the user
+      associated_instance.reload
+      associated_instance.user = user
+      associated_instance.save!
+
+      user.destroy
+      associated_instance.reload
+    end
+
+    it { associated_class.find_by_id(associated_instance.id).should == associated_instance }
+    it "should replace the user on all associations" do
+      associated_instance.user.should be_nil
+    end
+    it { associated_instance.journals.first.user.should == user2 }
+    it "should update first journal changes" do
+      associated_instance.journals.first.changes["user_id"].last.should == user2.id
+    end
+    it { associated_instance.journals.last.user.should == substitute_user }
+    it "should update second journal changes" do
+      associated_instance.journals.last.changes["user_id"].last.should == substitute_user.id
+    end
+  end
+
   describe "WHEN the user is assigned an issue category" do
     let(:issue_category) { Factory.build(:issue_category, :assigned_to => user,
                                                           :project => project) }
