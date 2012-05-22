@@ -12,7 +12,7 @@ describe DeletedUser do
   end
 
   describe :name do
-    it { user.name.should == I18n.t(:label_deleted_user) }
+    it { user.name.should == I18n.t('user.deleted') }
   end
 
   describe :mail do
