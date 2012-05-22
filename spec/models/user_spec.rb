@@ -354,5 +354,23 @@ describe User do
 
       it_should_behave_like "created associated object"
     end
+
+    describe "WHEN the user is assigned an issue category" do
+      let(:issue_category) { Factory.build(:issue_category, :assigned_to => user,
+                                                            :project => project) }
+
+      before do
+        Member.create!({ :principal => user,
+                         :project => project,
+                         :roles => [role] })
+        issue_category.save!
+
+        user.destroy
+        issue_category.reload
+      end
+
+      it { IssueCategory.find_by_id(issue_category.id).should == issue_category }
+      it { issue_category.assigned_to.should be_nil }
+    end
   end
 end
