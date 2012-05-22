@@ -173,6 +173,41 @@ describe User do
       let(:associated_class) { Issue }
       let(:associations) { [:author, :assigned_to] }
 
+      before do
+        User.current = user2
+        associated_instance.author = user2
+        associated_instance.assigned_to = user2
+        associated_instance.save!
+
+        User.current = user # in order to have the content journal created by the user
+        associated_instance.reload
+        associated_instance.author = user
+        associated_instance.assigned_to = user
+        associated_instance.save!
+
+        user.destroy
+        associated_instance.reload
+      end
+
+      it { associated_class.find_by_id(associated_instance.id).should == associated_instance }
+      it "should replace the user on all associations" do
+        associated_instance.author.should == substitute_user
+        associated_instance.assigned_to.should be_nil
+      end
+      it { associated_instance.journals.first.user.should == user2 }
+      it "should update first journal changes" do
+        associations.each do |association|
+          associated_instance.journals.first.changes[association.to_s + "_id"].last.should == user2.id
+        end
+      end
+      it { associated_instance.journals.last.user.should == substitute_user }
+      it "should update second journal changes" do
+        associations.each do |association|
+          associated_instance.journals.last.changes[association.to_s + "_id"].last.should == substitute_user.id
+        end
+      end
+
+
       it_should_behave_like "updated journalized associated object"
     end
 
