@@ -39,4 +39,31 @@ describe User do
       it { user.assigned_issues.should == [] }
     end
   end
+
+  describe :watches do
+    before do
+      user.save!
+    end
+
+    describe "WHEN the user is watching" do
+      let(:watcher) { Watcher.new(:watchable => issue,
+                                  :user => user) }
+
+      before do
+        issue.save
+
+        watcher.save
+      end
+
+      it { user.watches.should == [watcher] }
+    end
+
+    describe "WHEN the user isn't watching" do
+      before do
+        issue.save
+      end
+
+      it { user.watches.should == [] }
+    end
+  end
 end
