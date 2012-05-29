@@ -19,18 +19,14 @@ describe User, 'deletion' do
                                         :project => project,
                                         :status => issue_status,
                                         :assigned_to => user2) }
-  let(:attachment) { Factory.build(:attachment, :author => user) }
-
-  let(:news) { Factory.create(:news, :author => user) }
-
-  let(:comment) { Comment.create(:commented => news,
-                                 :author => user,
-                                 :comments => "lorem") }
 
   let(:substitute_user) { DeletedUser.first }
 
   before do
+    # for some reason there seem to be users in the db
+    User.delete_all
     user.save!
+    user2.save!
   end
 
   describe "WHEN there is the user" do
@@ -288,7 +284,6 @@ describe User, 'deletion' do
 
     it_should_behave_like "created associated object"
   end
-
 
   describe "WHEN the user is a member of a project" do
     before do

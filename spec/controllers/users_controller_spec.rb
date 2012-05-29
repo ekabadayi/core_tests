@@ -5,7 +5,7 @@ describe UsersController do
 
   describe :routes do
     it { params_from(:get, "/users/1/deletion_info").should == { :controller => 'users', :action => 'deletion_info', :id => "1" } }
-
+    it { params_from(:post, "/users/1").should == { :controller => 'users', :action => 'destroy', :id => 1 } }
   end
 
   describe "GET deletion_info" do
@@ -60,6 +60,7 @@ describe UsersController do
 
       before do
         @controller.stub!(:find_current_user).and_return(User.anonymous)
+        @controller.stub!(:check_if_login_required)
 
         post :destroy, params
       end
