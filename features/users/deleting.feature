@@ -11,3 +11,15 @@ Feature: User deletion
     And I accept the "Are you sure you want to delete the account?" alert
     Then I should see "Account successfully deleted"
     And I should be on the login page
+
+  @javascript
+  Scenario: An admin can delete other users
+    Given there is 1 user with the following:
+      | login     | bob |
+    And I am already logged in as "admin"
+    When I go to the edit page of the user called "bob"
+    And I follow "Delete" within ".contextual"
+    And I press "Delete"
+    And I accept the "Are you sure you want to delete the account?" alert
+    Then I should see "Account successfully deleted"
+    And I should be on the index page of users

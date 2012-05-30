@@ -2,10 +2,26 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper.rb")
 
 describe UsersController do
   let(:user) { Factory.create(:user) }
+  let(:admin) { Factory.create(:admin) }
 
   describe :routes do
-    it { params_from(:get, "/users/1/deletion_info").should == { :controller => 'users', :action => 'deletion_info', :id => "1" } }
-    it { params_from(:post, "/users/1").should == { :controller => 'users', :action => 'destroy', :id => 1 } }
+    describe "users" do
+      it { params_from(:get, "/users/1/deletion_info").should == { :controller => 'users',
+                                                                   :action => 'deletion_info',
+                                                                   :id => "1" } }
+      it { params_from(:delete, "/users/1").should == { :controller => 'users',
+                                                        :action => 'destroy',
+                                                        :id => "1" } }
+    end
+
+    describe "my" do
+      before do
+        User.stub!(:current).and_return(user)
+      end
+
+      it { params_from(:get, "/my/deletion_info").should == { :controller => 'users',
+                                                              :action => 'deletion_info' } }
+    end
   end
 
   describe "GET deletion_info" do
@@ -15,6 +31,20 @@ describe UsersController do
 
       before do
         @controller.stub!(:find_current_user).and_return(user)
+
+        get :deletion_info, params
+      end
+
+      it { response.should be_success }
+      it { assigns(:user).should == user }
+      it { response.should render_template("deletion_info") }
+    end
+
+    describe "WHEN the current user is admin" do
+      let(:params) { { "id" => user.id.to_s } }
+
+      before do
+        @controller.stub!(:find_current_user).and_return(admin)
 
         get :deletion_info, params
       end
@@ -52,6 +82,20 @@ describe UsersController do
       end
 
       it { response.should redirect_to({ :controller => 'account', :action => 'login' }) }
+      it { flash[:notice].should == I18n.t('account.deleted') }
+    end
+
+    describe "WHEN the current user is the admin" do
+      let(:params) { { "id" => user.id.to_s } }
+
+      before do
+        @controller.instance_eval{ flash.stub!(:sweep) }
+        @controller.stub!(:find_current_user).and_return(admin)
+
+        post :destroy, params
+      end
+
+      it { response.should redirect_to({ :controller => 'users', :action => 'index' }) }
       it { flash[:notice].should == I18n.t('account.deleted') }
     end
 
