@@ -8,7 +8,7 @@ Feature: User deletion
     When I go to the my account page
     And I follow "Delete account"
     And I press "Delete"
-    And I accept the "Are you sure you want to delete the account?" alert
+    And I accept the alert dialog
     Then I should see "Account successfully deleted"
     And I should be on the login page
 
@@ -17,9 +17,9 @@ Feature: User deletion
     Given there is 1 user with the following:
       | login     | bob |
     And I am already logged in as "admin"
-    When I go to the edit page of the user called "bob"
+    When I go to the edit page of the user "bob"
     And I follow "Delete" within ".contextual"
     And I press "Delete"
-    And I accept the "Are you sure you want to delete the account?" alert
+    And I accept the alert dialog
     Then I should see "Account successfully deleted"
     And I should be on the index page of users
