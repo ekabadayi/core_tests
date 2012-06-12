@@ -403,9 +403,9 @@ describe User, 'deletion' do
                                                           :project => project) }
 
     before do
-      Member.create!({ :principal => user,
-                       :project => project,
-                       :roles => [role] })
+      Factory.create(:member, :principal => user,
+                              :project => project,
+                              :roles => [role])
       issue_category.save!
 
       user.destroy
