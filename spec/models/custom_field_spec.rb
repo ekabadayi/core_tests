@@ -212,6 +212,24 @@ describe CustomField do
       it { field.should be_valid }
     end
 
+    describe "WITH a list field
+              WITH the field beeing required
+              WITH two translations
+              WITH neither translation defining a default_value" do
+
+      before do
+        field.field_format = 'list'
+        field.is_required = true
+        field.translations_attributes = [ { "name" => "Feld",
+                                            "locale" => "de" },
+                                          { "name" => "Field",
+                                            "possible_values" => "one\ntwo\nthree\n",
+                                            "locale" => "en" } ]
+      end
+
+      it { field.should be_valid }
+    end
+
     describe "WITH a boolean field
               WITH the field beeing required
               WITH two translations beeing provided
