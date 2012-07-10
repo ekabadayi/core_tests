@@ -9,7 +9,7 @@ Then /^I should see a quickinfo link for "([^"]*)" within "([^"]*)"$/ do |issue_
   issue = Issue.find_by_subject(issue_name)
 
 
-  text = "##{issue.id} #{issue.status}: #{issue.subject} #{issue.start_date.to_s} - #{issue.due_date.to_s} (#{issue.assigned_to.to_s})"
+  text = "##{issue.id} #{issue.status}: #{issue.subject} #{issue.start_date.to_s} – #{issue.due_date.to_s} (#{issue.assigned_to.to_s})"
   step %Q{I should see "#{text}" within "#{container}"}
 end
 
