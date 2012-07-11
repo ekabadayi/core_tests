@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Issue do
-  describe 'Acts as journalized recreate initial journal' do
+  describe 'Acts as journalized' do
     before(:each) do
       IssueStatus.delete_all
       IssuePriority.delete_all
@@ -24,48 +24,60 @@ describe Issue do
       @issue ||= Factory.create(:issue, :project => @project, :status => @status_open, :tracker => @tracker, :author => @current)
     end
 
-    it 'should not include certain attributes' do
-      recreated_journal = @issue.recreate_initial_journal!
+    describe 'ignore blank to blank transitions' do
+      it 'should not include the "nil to empty string"-transition' do
+        @issue.description = nil
+        @issue.save!
 
-      recreated_journal.attributes["changes"].include?('rgt').should == false
-      recreated_journal.attributes["changes"].include?('lft').should == false
-      recreated_journal.attributes["changes"].include?('lock_version').should == false
-      recreated_journal.attributes["changes"].include?('updated_at').should == false
-      recreated_journal.attributes["changes"].include?('updated_on').should == false
-      recreated_journal.attributes["changes"].include?('id').should == false
-      recreated_journal.attributes["changes"].include?('type').should == false
-      recreated_journal.attributes["changes"].include?('root_id').should == false
-    end
-
-    it 'should not include useless transitions' do
-      recreated_journal = @issue.recreate_initial_journal!
-
-      recreated_journal.attributes["changes"].values.each do |change|
-        change.first.should_not == change.last
+        @issue.description = ""
+        @issue.send(:incremental_journal_changes).should be_empty
       end
     end
 
-    it 'should not be different from the initially created journal by aaj' do
-      # Creating four journals total
-      @issue.status = @status_resolved
-      @issue.assigned_to = @user2
-      @issue.save!
-      @issue.reload
+    describe 'Acts as journalized recreate initial journal' do
+      it 'should not include certain attributes' do
+        recreated_journal = @issue.recreate_initial_journal!
 
-      @issue.priority = @priority_high
-      @issue.save!
-      @issue.reload
+        recreated_journal.attributes["changes"].include?('rgt').should == false
+        recreated_journal.attributes["changes"].include?('lft').should == false
+        recreated_journal.attributes["changes"].include?('lock_version').should == false
+        recreated_journal.attributes["changes"].include?('updated_at').should == false
+        recreated_journal.attributes["changes"].include?('updated_on').should == false
+        recreated_journal.attributes["changes"].include?('id').should == false
+        recreated_journal.attributes["changes"].include?('type').should == false
+        recreated_journal.attributes["changes"].include?('root_id').should == false
+      end
 
-      @issue.status = @status_rejected
-      @issue.priority = @priority_low
-      @issue.estimated_hours = 3
-      @issue.remaining_hours = 43 if Redmine::Plugin.all.collect(&:id).include?(:backlogs)
-      @issue.save!
+      it 'should not include useless transitions' do
+        recreated_journal = @issue.recreate_initial_journal!
 
-      initial_journal = @issue.journals.first
-      recreated_journal = @issue.recreate_initial_journal!
+        recreated_journal.attributes["changes"].values.each do |change|
+          change.first.should_not == change.last
+        end
+      end
 
-      initial_journal.should be_identical(recreated_journal)
+      it 'should not be different from the initially created journal by aaj' do
+        # Creating four journals total
+        @issue.status = @status_resolved
+        @issue.assigned_to = @user2
+        @issue.save!
+        @issue.reload
+
+        @issue.priority = @priority_high
+        @issue.save!
+        @issue.reload
+
+        @issue.status = @status_rejected
+        @issue.priority = @priority_low
+        @issue.estimated_hours = 3
+        @issue.remaining_hours = 43 if Redmine::Plugin.all.collect(&:id).include?(:backlogs)
+        @issue.save!
+
+        initial_journal = @issue.journals.first
+        recreated_journal = @issue.recreate_initial_journal!
+
+        initial_journal.should be_identical(recreated_journal)
+      end
     end
   end
 end
