@@ -41,7 +41,7 @@ Feature: Name localizations of bool custom fields can be deleted
   Scenario: Deleting a name localization frees the locale to be used by other translation field
     When I follow "My Custom Field"
     And I delete the english localization of the "name" attribute
-    And I select "English" from "custom_field_translations_attributes_1_locale"
+    And I change the german localization of the "name" attribute to be english
     And I press "Save"
     And I follow "Mein Benutzerdefiniertes Feld"
     Then there should be the following localizations:
