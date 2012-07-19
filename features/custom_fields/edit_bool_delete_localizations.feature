@@ -1,7 +1,7 @@
 Feature: Name localizations of bool custom fields can be deleted
 
   Background:
-    Given I am admin
+    Given I am already logged in as "admin"
     And the following languages are active:
       | en |
       | de |
@@ -10,9 +10,9 @@ Feature: Name localizations of bool custom fields can be deleted
       | name             | type      |
       | My Custom Field  | bool      |
     And the Custom Field called "My Custom Field" has the following localizations:
-      | locale        | attribute   | value                         |
-      | en            | name        | My Custom Field               |
-      | de            | name        | Mein Benutzerdefiniertes Feld |
+      | locale        | name                          |
+      | en            | My Custom Field               |
+      | de            | Mein Benutzerdefiniertes Feld |
     When I go to the custom fields page
 
   @javascript
@@ -65,7 +65,3 @@ Feature: Name localizations of bool custom fields can be deleted
     When I follow "My Custom Field"
     And I delete the german localization of the "name" attribute
     Then the delete link for the english localization of the "name" attribute should not be visible
-
-
-
-

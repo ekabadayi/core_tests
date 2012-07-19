@@ -1,7 +1,7 @@
 Feature: Editing text custom fields
 
   Background:
-    Given I am admin
+    Given I am already logged in as "admin"
     And the following languages are active:
       | en |
       | de |
@@ -25,9 +25,9 @@ Feature: Editing text custom fields
   @javascript
   Scenario: Changing a localization which is not present for any other attribute to a locale existing in another attribute deletes the localization completely
     When the Custom Field called "My Custom Field" has the following localizations:
-      | locale        | attribute     | value                         |
-      | en            | name          | My Custom Field               |
-      | de            | default_value | default                       |
+      | locale        | name            | default_value   |
+      | en            | My Custom Field | nil             |
+      | de            | nil             | default         |
     And I go to the custom fields page
     And I follow "My Custom Field"
     And I select "English" from "custom_field_translations_attributes_1_locale"
@@ -38,11 +38,10 @@ Feature: Editing text custom fields
       | en     | My Custom Field | default       |
 
   @javascript
-  Scenario: Creating a text custom field with multiple name and default_value localizations
+  Scenario: Changing a localization of one attribute to a non existent localization creates the localization
     When the Custom Field called "My Custom Field" has the following localizations:
-      | locale        | attribute     | value           |
-      | en            | name          | My Custom Field |
-      | en            | default_value | default         |
+      | locale        | name            | default_value   |
+      | en            | My Custom Field | default         |
     And I go to the custom fields page
     And I follow "My Custom Field"
     And I select "Deutsch" from "custom_field_translations_attributes_0_locale"
