@@ -64,3 +64,11 @@ Then /^[iI] toggle the [oO]ptions fieldset$/ do
     toggleFieldset($(f).select("legend").first());
   JS
 end
+
+Then /^the setting for "(.*?)" should include "(.*?)"$/ do |setting_name, value|
+  Setting.send(setting_name).should include(value)
+end
+
+Then /^the setting for "(.*?)" should not include "(.*?)"$/ do |setting_name, value|
+  Setting.send(setting_name).should_not include(value)
+end
