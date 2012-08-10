@@ -74,29 +74,82 @@ describe CustomField do
     end
   end
 
-  describe :translation_attributes do
-    before do
-      field.translations_attributes = [ { "name" => "Feld", "default_value" => "zwei", "possible_values" => ["eins", "zwei", "drei"], "locale" => "de" },
-                                        { "name" => "Field", "locale" => "en", "possible_values" => "one\ntwo\nthree\n" },
-                                        { "name" => "", "default_value" => "", "locale" => "fr" },
-                                        { "name" => "lorem", "locale" => ""},
-                                        { "default_value" => "blubs", "locale" => "" },
-                                        { "locale" => "es" } ]
-      field.field_format = 'list'
-      field.save!
-      field.reload
+  describe :translations_attributes do
+    describe "WHEN providing a hash with locale and values" do
+      before do
+        field.translations_attributes = [ { "name" => "Feld",
+                                            "default_value" => "zwei",
+                                            "possible_values" => ["eins", "zwei", "drei"],
+                                            "locale" => "de" } ]
+      end
+
+      it { field.should have(1).translations }
+      it { field.name(:de).should == "Feld" }
+      it { field.default_value(:de).should == "zwei" }
+      it { field.possible_values(:de).should == ["eins", "zwei", "drei"] }
     end
 
-    it { field.name(:en).should == "Field" }
-    it { field.name(:de).should == "Feld" }
-    it { field.name(:fr).should == "" }
-    it { I18n.without_fallbacks{field.default_value(:en)}.should == nil }
-    it { field.default_value(:de).should == "zwei" }
-    it { field.default_value(:fr).should == "" }
-    it { field.possible_values(:de).should =~ ["eins", "zwei", "drei"] }
-    it { field.possible_values(:en).should =~ ["one", "two", "three"] }
-    it { field.should have(3).translations }
+    describe "WHEN providing a hash with only a locale" do
+      before do
+        field.translations_attributes = [ { "locale" => "de" } ]
+      end
+
+      it { field.should have(0).translations }
+    end
+
+    describe "WHEN providing a hash with a locale and blank values" do
+      before do
+        field.translations_attributes = [ { "name" => "",
+                                            "default_value" => "",
+                                            "possible_values" => "",
+                                            "locale" => "de" } ]
+      end
+
+      it { field.should have(0).translations }
+    end
+
+    describe "WHEN providing a hash with a locale and only one values" do
+      before do
+        field.translations_attributes = [ { "name" => "Feld",
+                                            "locale" => "de" } ]
+      end
+
+      it { field.should have(1).translations }
+      it { field.name(:de).should == "Feld" }
+    end
+
+    describe "WHEN providing a hash without a locale but with values" do
+      before do
+        field.translations_attributes = [ { "name" => "Feld",
+                                            "default_value" => "zwei",
+                                            "possible_values" => ["eins", "zwei", "drei"],
+                                            "locale" => "" } ]
+      end
+
+      it { field.should have(0).translations }
+    end
+
+    describe "WHEN already having a translation and wishing to delete it" do
+      before do
+        I18n.locale = :de
+        field.name = "Feld"
+
+        I18n.locale = :en
+        field.name = "Field"
+
+        field.save
+        field.reload
+
+        field.translations_attributes = [ { "id" => field.translations.first.id.to_s,
+                                            "_destroy" => "1" } ]
+
+        field.save
+      end
+
+      it { field.should have(1).translation }
+    end
   end
+
 
   describe :default_value do
     describe "localization" do
