@@ -538,7 +538,7 @@ describe WikiController do
 
               response.should have_tag '.menu_root' do
                 with_tag "a[href=#{wiki_new_child_path(:project_id => @project, :id => 'Wiki')}]",
-                         "Create new page"
+                         "Create new child page"
               end
             end
           end
@@ -554,7 +554,7 @@ describe WikiController do
               response.should be_success
 
               response.should have_tag '.menu_root' do
-                without_tag "a", "Create new page"
+                without_tag "a", "Create new child page"
               end
             end
           end
@@ -569,7 +569,7 @@ describe WikiController do
 
               response.should have_tag '.menu_root' do
                 with_tag "a[href=#{wiki_new_child_path(:project_id => @project, :id => 'Wiki')}]",
-                         "Create new page"
+                         "Create new child page"
               end
             end
           end
@@ -585,7 +585,7 @@ describe WikiController do
               response.should be_success
 
               response.should have_tag '.menu_root' do
-                without_tag "a", "Create new page"
+                without_tag "a", "Create new child page"
               end
             end
           end

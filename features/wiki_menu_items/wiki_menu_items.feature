@@ -34,29 +34,29 @@ Feature: Wiki menu items
     And I click on "Configure menu item"
     And I fill in "Aioli Wuaärst" for "wiki_menu_item_name"
     And I choose "Show in project navigation"
-    And I check "Show submenu item 'Create new page'"
+    And I check "Show submenu item 'Create new child page'"
     And I check "Show submenu item 'Index page'"
     And I press "Save"
     When I go to the wiki page "AwesomePage" for the project called "Awesome Project"
     Then I should see "Aioli Wuaärst" within "#main-menu"
     Then I should see "Table of Contents" within "#main-menu"
-    Then I should see "Create new page" within "#main-menu"
+    Then I should see "Create new child page" within "#main-menu"
 
     @javascript
   Scenario: Change existing entry
     When I go to the wiki page "Wiki" for the project called "Awesome Project"
     Then I should see "Table of Contents" within "#main-menu"
-    Then I should see "Create new page" within "#main-menu"
+    Then I should see "Create new child page" within "#main-menu"
     When I click on "More functions"
     And I click on "Configure menu item"
     And I fill in "Wikikiki" for "wiki_menu_item_name"
     And I uncheck "Show submenu item 'Index page'"
-    And I uncheck "Show submenu item 'Create new page'"
+    And I uncheck "Show submenu item 'Create new child page'"
     And I press "Save"
     When I go to the wiki page "Wiki" for the project called "Awesome Project"
     Then I should see "Wikikiki" within "#main-menu"
     Then I should not see "Table of Contents" within "#main-menu"
-    Then I should not see "Create new page" within "#main-menu"
+    Then I should not see "Create new child page" within "#main-menu"
 
 
     @javascript
