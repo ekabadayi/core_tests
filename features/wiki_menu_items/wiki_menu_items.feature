@@ -78,15 +78,6 @@ Feature: Wiki menu items
     Then I should see "Wiki" within ".menu-children"
 
     @javascript
-  Scenario: Removing a menu item when there is only one
-    When I go to the wiki page "Wiki" for the project called "Awesome Project"
-    When I click on "More functions"
-    And I click on "Configure menu item"
-    And I choose "Do not show this wikipage in project navigation"
-    And I press "Save"
-    Then I should see "General Error: There needs to be at least one wiki item. If you really want to remove all wiki menu items you have to deactivate the modul 'wiki' in project settings." within "#errorExplanation"
-
-    @javascript
   Scenario: Removing a menu item
     Given the project "Awesome Project" has a wiki menu item with the following:
       | title | DontKillMe |
