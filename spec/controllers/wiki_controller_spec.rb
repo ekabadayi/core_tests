@@ -373,19 +373,6 @@ describe WikiController do
         end
       end
 
-      shared_examples_for 'all custom wiki menu items with child pages' do
-        it 'is active, when the given custom wiki menu item is an ancestor of the shown page' do
-          get 'show', :id => @child_page.title, :project_id => @project.id
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag('#main-menu') do
-            with_tag "a.#{@wiki_menu_item.item_class}.selected"
-          end
-        end
-      end
-
       describe '- custom wiki menu item pointing to a saved wiki page' do
         before do
           @wiki_menu_item = @main_menu_item_for_page_with_content
@@ -394,7 +381,6 @@ describe WikiController do
         end
 
         it_should_behave_like 'all custom wiki menu items'
-        it_should_behave_like 'all custom wiki menu items with child pages'
       end
 
       describe '- custom wiki menu item pointing to a redirect' do
@@ -405,7 +391,6 @@ describe WikiController do
         end
 
         it_should_behave_like 'all custom wiki menu items'
-        it_should_behave_like 'all custom wiki menu items with child pages'
       end
 
       describe '- custom wiki menu item pointing to a new wiki page' do
