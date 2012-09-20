@@ -21,6 +21,20 @@ describe WikiMenuItem do
       wiki_item.options[:new_wiki_page].should eql true
     end
 
+    it 'should change title when a wikipage is renamed' do
+      wikipage = Factory.create(:wiki_page, :title => 'Oldtitle')
+
+      menu_item_1 = Factory.create(:wiki_menu_item, :wiki_id => wikipage.wiki.id,
+                                   :name    => 'Item 1',
+                                   :title   => 'Oldtitle')
+
+      wikipage.title = 'Newtitle'
+      wikipage.save
+
+      menu_item_1.reload
+      menu_item_1.title.should == wikipage.title
+    end
+
     describe 'it should destroy' do
       before(:each) do
         @project.enabled_modules << EnabledModule.new(:name => 'wiki')
