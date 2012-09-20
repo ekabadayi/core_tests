@@ -1,3 +1,4 @@
+# TODO: check if this step can be removed as it is plugin specific
 Given /^there is a standard project named "([^\"]*)"$/ do |name|
   steps %Q{
     Given there is 1 project with the following:
@@ -51,11 +52,11 @@ Given /^there is a standard project named "([^\"]*)"$/ do |name|
 end
 
 Then /^[iI] should (not )?see "([^\"]*)" in the overall sum(?:s)?$/ do |negative, sum|
-  steps "Then I should #{negative}see \"#{sum}\" within \"tr.sum.all\""
+  step %Q{I should #{negative}see "#{sum}" within "tr.sum.all"}
 end
 
 Then /^[iI] should (not )?see "([^\"]*)" in the grouped sum(?:s)?$/ do |negative, sum|
-  steps "Then I should #{negative}see \"#{sum}\" within \"tr.sum.grouped\""
+  step %Q{I should #{negative}see "#{sum}" within "tr.sum.grouped"}
 end
 
 Then /^[iI] toggle the [oO]ptions fieldset$/ do
@@ -63,12 +64,4 @@ Then /^[iI] toggle the [oO]ptions fieldset$/ do
     f = $$("fieldset").without($("filters")).first();
     toggleFieldset($(f).select("legend").first());
   JS
-end
-
-Then /^the setting for "(.*?)" should include "(.*?)"$/ do |setting_name, value|
-  Setting.send(setting_name).should include(value)
-end
-
-Then /^the setting for "(.*?)" should not include "(.*?)"$/ do |setting_name, value|
-  Setting.send(setting_name).should_not include(value)
 end
