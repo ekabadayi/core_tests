@@ -27,6 +27,7 @@ Feature: Issue Sum Calculations for Currency
     And I toggle the Options fieldset
     And I check "display_sums"
     And I click on "Apply"
+    And I wait 10 seconds for AJAX
     Then I should see "150" in the overall sum
 
   @javascript
@@ -44,6 +45,7 @@ Feature: Issue Sum Calculations for Currency
     And I toggle the Options fieldset
     And I check "display_sums"
     And I click on "Apply"
+    And I wait 10 seconds for AJAX
     Then I should not see "150" in the overall sum
 
   @javascript
@@ -65,7 +67,8 @@ Feature: Issue Sum Calculations for Currency
     And I press "Save"
     And I go to the issues index page for the project called "project1"
     And I click on "TestQuery"
-    Then the "display_sums" checkbox should be checked
+    Then I should be on the issues index page for the project called "project1"
+    And the "display_sums" checkbox should be checked
     And I should see "150" in the overall sum
     And I click on "Edit"
     Then the "query[display_sums]" checkbox should be checked
@@ -89,7 +92,8 @@ Feature: Issue Sum Calculations for Currency
     And I press "Save"
     And I go to the issues index page for the project called "project1"
     And I click on "TestQuery"
-    Then the "display_sums" checkbox should not be checked
+    Then I should be on the issues index page for the project called "project1"
+    And the "display_sums" checkbox should not be checked
     And I click on "Edit"
     Then the "query[display_sums]" checkbox should not be checked
 
@@ -98,7 +102,7 @@ Feature: Issue Sum Calculations for Currency
     Given there is 1 user with:
       | Login        | alice   |
     And the user "alice" is a "Manager" in the project "project1"
-    Given there is 1 user with:
+    And there is 1 user with:
       | Login        | bob   |
     And the user "bob" is a "Manager" in the project "project1"
     And the user "manager" has 1 issue with the following:
@@ -123,6 +127,7 @@ Feature: Issue Sum Calculations for Currency
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
+    And I wait 10 seconds for AJAX
     Then I should see "150" in the grouped sum
     And I should see "300" in the grouped sum
     And I should see "450" in the grouped sum
@@ -143,6 +148,7 @@ Feature: Issue Sum Calculations for Currency
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
+    And I wait 10 seconds for AJAX
     Then I should see "150" in the grouped sum
     And I should see "150" in the overall sum
 
@@ -161,5 +167,6 @@ Feature: Issue Sum Calculations for Currency
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
+    And I wait 10 seconds for AJAX
     Then I should see "150.09" in the grouped sum
     And I should see "150.09" in the overall sum
