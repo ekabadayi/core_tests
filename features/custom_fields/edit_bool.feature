@@ -18,7 +18,8 @@ Feature: Editing a bool custom field
     And I add the german localization of the "name" attribute as "Ticket Feld"
     And I add the french localization of the "name" attribute as "Lorem"
     And I press "Save"
-    And I follow "Issue Field"
+    Then I should be on the custom fields page
+    When I follow "Issue Field"
     Then there should be the following localizations:
       | locale  | name        | default_value |
       | en      | Issue Field | 0             |
