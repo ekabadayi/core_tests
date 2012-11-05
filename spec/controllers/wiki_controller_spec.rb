@@ -229,29 +229,20 @@ describe WikiController do
                                                       :title   => 'PagewithContent')
       @page_without_content = Factory.create(:wiki_page, :wiki_id => @project.wiki.id,
                                                       :title   => 'PagewithoutContent')
-      @redirected_page = Factory.create(:wiki_page, :wiki_id => @project.wiki.id,
-                                                    :title   => 'TargetTitle')
       @unrelated_page = Factory.create(:wiki_page, :wiki_id => @project.wiki.id,
                                                    :title   => 'UnrelatedPage')
-
-      # creating redirects
-      @redirect = Factory.create(:wiki_redirect, :wiki_id      => @project.wiki.id,
-                                                 :title        => 'Source_Title',
-                                                 :redirects_to => 'Target_Title')
 
       # creating page contents
       Factory.create(:wiki_content, :page_id   => @page_default.id,
                                     :author_id => @user.id)
       Factory.create(:wiki_content, :page_id   => @page_with_content.id,
                                     :author_id => @user.id)
-      Factory.create(:wiki_content, :page_id   => @redirected_page.id,
-                                    :author_id => @user.id)
       Factory.create(:wiki_content, :page_id   => @unrelated_page.id,
                                     :author_id => @user.id)
 
       # creating some child pages
       @children = {}
-      [@page_with_content, @redirected_page].each do |page|
+      [@page_with_content].each do |page|
         child_page = Factory.create(:wiki_page, :wiki_id   => @project.wiki.id,
                                                 :parent_id => page.id,
                                                 :title     => page.title + " child")
@@ -268,80 +259,22 @@ describe WikiController do
                                                                :name    => 'Item for Page with Content',
                                                                :title   => @page_with_content.title)
 
-        @main_menu_item_with_redirect = Factory.create(:wiki_menu_item, :wiki_id => @project.wiki.id,
-                                                       :name    => 'Item with Redirect',
-                                                       :title   => @redirect.title)
-
         @main_menu_item_for_new_wiki_page = Factory.create(:wiki_menu_item, :wiki_id => @project.wiki.id,
                                                            :name    => 'Item for new WikiPage',
                                                            :title   => 'NewWikiPage')
+
+        @other_menu_item = Factory.create(:wiki_menu_item, :wiki_id => @project.wiki.id,
+                                                           :name    => 'Item for other page',
+                                                           :title   => @unrelated_page.title)
+
       end
 
-      describe '- default wiki menu item' do
-        it 'is active, when default start page is selected' do
-          get 'show', :project_id => @project.id
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag('#main-menu') do
-            with_tag 'a.Wiki.selected'
-          end
-        end
-
-        it "is active on parents item, when new page is shown" do
-          get 'new', :id => @page_with_content.title, :project_id => @project.identifier
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag '#main-menu' do
-            with_tag "a.#{@main_menu_item_for_page_with_content.item_class}.selected"
-          end
-        end
-
-        it 'is active, when an index page is shown' do
-          get 'index', :id => 'Wiki', :project_id => @project.id
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag('#main-menu') do
-            with_tag 'a.Wiki.selected'
-          end
-        end
-
-        it 'is inactive, when a different wiki page is shown' do
-          get 'show', :id => @main_menu_item_for_page_with_content.title, :project_id => @project.id
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag('#main-menu') do
-            with_tag 'a.Wiki'
-            without_tag 'a.Wiki.selected'
-          end
-        end
-      end
-
-      shared_examples_for 'all custom wiki menu items' do
-        it 'is inactive, when default start page is shown' do
-          get 'show', :project_id => @project.id
-
-          response.should be_success
-          response.should have_exactly_one_selected_menu_item_in(:project_menu)
-
-          response.should have_tag('#main-menu') do
-            with_tag "a.#{@wiki_menu_item.item_class}"
-            without_tag "a.#{@wiki_menu_item.item_class}.selected"
-          end
-        end
-
+      shared_examples_for 'all wiki menu items' do
         it "is inactive, when an unrelated page is shown" do
           get 'show', :id => @unrelated_page.title, :project_id => @project.id
 
           response.should be_success
-          #response.should have_exactly_one_selected_menu_item_in(:project_menu)
+          response.should have_exactly_one_selected_menu_item_in(:project_menu)
 
           response.should have_tag('#main-menu') do
             with_tag "a.#{@wiki_menu_item.item_class}"
@@ -349,7 +282,7 @@ describe WikiController do
           end
         end
 
-        it "is inactive, when another custom wiki menu item's page is shown" do
+        it "is inactive, when another wiki menu item's page is shown" do
           get 'show', :id => @other_wiki_menu_item.title, :project_id => @project.id
 
           response.should be_success
@@ -361,7 +294,7 @@ describe WikiController do
           end
         end
 
-        it 'is active, when the given custom wiki menu item is shown' do
+        it 'is active, when the given wiki menu item is shown' do
           get 'show', :id => @wiki_menu_item.title, :project_id => @project.id
 
           response.should be_success
@@ -373,44 +306,78 @@ describe WikiController do
         end
       end
 
-      describe '- custom wiki menu item pointing to a saved wiki page' do
+
+      shared_examples_for 'all existing wiki menu items' do
+        #TODO: Add tests for new and toc options within menu item
+        it "is active on parents item, when new page is shown" do
+          get 'new_child', :id => @wiki_menu_item.title, :project_id => @project.identifier
+
+          response.should be_success
+          response.should have_no_selected_menu_item_in(:project_menu)
+
+          response.should have_tag '#main-menu' do
+            with_tag "a.#{@wiki_menu_item.item_class}"
+            without_tag "a.#{@wiki_menu_item.item_class}.selected"
+          end
+        end
+
+        it 'is inactive, when a toc page is shown' do
+          get 'index', :id => @wiki_menu_item.title, :project_id => @project.id
+
+          response.should be_success
+          response.should have_no_selected_menu_item_in(:project_menu)
+
+          response.should have_tag('#main-menu') do
+            with_tag "a.#{@wiki_menu_item.item_class}"
+            without_tag "a.#{@wiki_menu_item.item_class}.selected"
+          end
+        end
+      end
+
+      shared_examples_for 'all wiki menu items with child pages' do
+        it 'is active, when the given wiki menu item is an ancestor of the shown page' do
+          get 'show', :id => @child_page.title, :project_id => @project.id
+
+          response.should be_success
+          response.should have_exactly_one_selected_menu_item_in(:project_menu)
+
+          response.should have_tag('#main-menu') do
+            with_tag "a.#{@wiki_menu_item.item_class}.selected"
+          end
+        end
+      end
+
+
+      describe '- wiki menu item pointing to a saved wiki page' do
         before do
           @wiki_menu_item = @main_menu_item_for_page_with_content
-          @other_wiki_menu_item = @main_menu_item_for_new_wiki_page
+          @other_wiki_menu_item = @other_menu_item
           @child_page = @children[@page_with_content]
         end
 
-        it_should_behave_like 'all custom wiki menu items'
+        it_should_behave_like 'all wiki menu items'
+        it_should_behave_like 'all existing wiki menu items'
+        it_should_behave_like 'all wiki menu items with child pages'
       end
 
-      describe '- custom wiki menu item pointing to a redirect' do
-        before do
-          @wiki_menu_item = @main_menu_item_with_redirect
-          @other_wiki_menu_item = @main_menu_item_for_new_wiki_page
-          @child_page = @children[@redirected_page]
-        end
-
-        it_should_behave_like 'all custom wiki menu items'
-      end
-
-      describe '- custom wiki menu item pointing to a new wiki page' do
+      describe '- wiki menu item pointing to a new wiki page' do
         before do
           @wiki_menu_item = @main_menu_item_for_new_wiki_page
-          @other_wiki_menu_item = @main_menu_item_for_page_with_content
+          @other_wiki_menu_item = @other_menu_item
         end
 
-        it_should_behave_like 'all custom wiki menu items'
+        it_should_behave_like 'all wiki menu items'
       end
 
       describe '- wiki_menu_item containing special chars only' do
         before do
           @wiki_menu_item = Factory.create(:wiki_menu_item, :wiki_id => @project.wiki.id,
-                                                :name    => '?',
-                                                :title   => 'Help')
-          @other_wiki_menu_item = @main_menu_item_for_page_with_content
+                                                            :name    => '?',
+                                                            :title   => 'Help')
+          @other_wiki_menu_item = @other_menu_item
         end
 
-        it_should_behave_like 'all custom wiki menu items'
+        it_should_behave_like 'all wiki menu items'
       end
     end
 

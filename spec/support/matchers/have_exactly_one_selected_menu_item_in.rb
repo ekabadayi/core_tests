@@ -1,21 +1,5 @@
 Spec::Matchers.define :have_exactly_one_selected_menu_item_in do |menu|
   match do |actual|
-    menu_selector = HTML::Selector.new(selector_for_menu(menu))
-    menu_item_selector = HTML::Selector.new('a.selected')
-
-    html = HTML::Document.new(actual.is_a?(String) ? actual : actual.body)
-
-    menu_matches = menu_selector.select(html.root)
-    if menu_matches.size == 1
-      menu_item_matches = menu_item_selector.select(menu_matches.first)
-
-      menu_item_matches.size == 1
-    else
-      false
-    end
-  end
-
-  match do |actual|
     failure_message(menu, actual) == nil
   end
 
