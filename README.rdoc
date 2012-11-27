@@ -1,14 +1,18 @@
-= Chiliproject Tests
+= OpenProject Tests
 
-This plugin contains core test using rspec and cucumber.
+This plugin contains core tests for the OpenProject Core using rspec and cucumber.
+The long term plan is to integrate this repository into OpenProject.
+However, up until then rspec and cucumber tests are tracked here.
 
 = Requirements
 
-* OpenProject
+* OpenProject[https://github.com/finnlabs/chiliproject]
+* OpenProject DevTools-Plugin[https://github.com/finnlabs/redmine-dev-tools]
+* OpenProject Cucumber-Plugin[https://github.com/finnlabs/chiliproject_cucumber]
 * Rspec
 * Cucumber
 
-== License
+= License
 
 (c) 2011-2012 - Finn GmbH
 
