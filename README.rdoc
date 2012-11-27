@@ -8,6 +8,8 @@ This plugin contains core test using rspec and cucumber.
 * Rspec
 * Cucumber
 
-== Licence
+== License
 
-(c) 2011 - Romano Licker - Finn GmbH
+(c) 2011-2012 - Finn GmbH
+
+This plug-in is licensed under the GNU GPL v3. See COPYRIGHT.txt and GPL.txt for details.
