@@ -7,7 +7,7 @@ However, up until then rspec and cucumber tests are tracked here.
 = Requirements
 
 * OpenProject[https://github.com/finnlabs/chiliproject]
-* OpenProject DevTools-Plugin[https://github.com/finnlabs/redmine-dev-tools]
+* OpenProject DevTools-Plugin[https://github.com/finnlabs/dev_tools]
 * OpenProject Cucumber-Plugin[https://github.com/finnlabs/chiliproject_cucumber]
 * Rspec
 * Cucumber
