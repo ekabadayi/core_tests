@@ -5,7 +5,7 @@ Feature: Group Memberships
       And there is a role "Developer"
 
       And there is 1 project with the following:
-        | Name       | Project1 |
+        | Name       | project1 |
         | Identifier | project1 |
 
       And there is 1 User with:
@@ -27,16 +27,16 @@ Feature: Group Memberships
         | peter |
         | bob   |
 
+    Given I am already logged in as "admin"
 
   @javascript
   Scenario: Adding a group to a project on the project's page adds the group members as well
-    Given I am admin
-
      When I go to the settings page of the project called "project1"
       And I click on "tab-members"
       And I check "A-Team"
       And I check "Manager"
       And I press "Add"
+
      Then I should be on the settings page of the project called "project1"
       And I should see "A-Team" within ".members"
       And I should see "Bob Bobbit" within ".members"
@@ -45,8 +45,6 @@ Feature: Group Memberships
 
   @javascript
   Scenario: Group-based memberships and individual memberships are handled separately
-    Given I am admin
-
      When I go to the settings page of the project called "project1"
       And I click on "tab-members"
       And I check "Bob Bobbit"
@@ -69,9 +67,6 @@ Feature: Group Memberships
 
   @javascript
   Scenario: Removing a group from a project on the project's page removes all group members as well
-
-    Given I am admin
-
      When I go to the settings page of the project called "project1"
       And I click on "tab-members"
       And I check "A-Team"
@@ -90,11 +85,9 @@ Feature: Group Memberships
 
   @javascript
   Scenario: Adding a user to a group adds the user to projects as well
-    Given I am admin
-
      When I go to the admin page of the group called "A-Team"
       And I click on "tab-memberships"
-      And I select "Project1" from "Projects"
+      And I select "project1" from "Projects"
       And I check "Manager"
       And I press "Add"
       And I wait for the AJAX requests to finish
@@ -115,11 +108,9 @@ Feature: Group Memberships
 
   @javascript
   Scenario: Removing a user from a group removes the user from projects as well
-    Given I am admin
-
      When I go to the admin page of the group called "A-Team"
       And I click on "tab-memberships"
-      And I select "Project1" from "Projects"
+      And I select "project1" from "Projects"
       And I check "Manager"
       And I press "Add"
       And I wait for the AJAX requests to finish
@@ -137,11 +128,9 @@ Feature: Group Memberships
 
   @javascript
   Scenario: Adding a group to project on the group's page adds the group members as well
-    Given I am admin
-
      When I go to the admin page of the group called "A-Team"
       And I click on "tab-memberships"
-      And I select "Project1" from "Projects"
+      And I select "project1" from "Projects"
       And I check "Manager"
       And I press "Add"
       And I wait for the AJAX requests to finish
