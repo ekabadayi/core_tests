@@ -22,9 +22,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some other issue |
       | cf1     | 50               |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I click on "Apply"
     And I wait 10 seconds for AJAX
@@ -40,9 +39,8 @@ Feature: Issue Sum Calculations for Currency
       | cf1     | 50               |
     And the custom field "cf1" is not summable
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I click on "Apply"
     And I wait 10 seconds for AJAX
@@ -57,9 +55,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some other issue |
       | cf1     | 50               |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I click on "Apply"
     And I click on "Save"
@@ -82,9 +79,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some other issue |
       | cf1     | 50               |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I uncheck "display_sums"
     And I click on "Apply"
     And I click on "Save"
@@ -121,9 +117,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some issue |
       | cf1     | 250        |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
@@ -142,9 +137,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some issue |
       | cf1     | 50         |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
@@ -161,9 +155,8 @@ Feature: Issue Sum Calculations for Currency
       | subject | Some issue |
       | cf1     | 50.09      |
     When I go to the issues index page for the project called "project1"
-    And I select to see columns
-    | cf1 |
     And I toggle the Options fieldset
+    And I select to see column "cf1"
     And I check "display_sums"
     And I select "Assignee" from "group_by"
     And I click on "Apply"
