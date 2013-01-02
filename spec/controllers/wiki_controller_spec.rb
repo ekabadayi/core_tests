@@ -47,8 +47,6 @@ describe WikiController do
 
   describe 'actions' do
     before do
-      @controller.stub!(:set_localization)
-
       @role = Factory.create(:non_member)
       @user = Factory.create(:admin)
 
@@ -61,7 +59,7 @@ describe WikiController do
 
       # creating pages
       @existing_page = Factory.create(:wiki_page, :wiki_id => @project.wiki.id,
-                                                  :title   => 'ExisitingPage')
+                                                  :title   => 'ExistingPage')
 
       # creating page contents
       Factory.create(:wiki_content, :page_id   => @existing_page.id,
@@ -205,7 +203,6 @@ describe WikiController do
     integrate_views
 
     before :each do
-      @controller.stub!(:set_localization)
       Setting.stub!(:login_required?).and_return(false)
 
       @role = Factory.create(:non_member)
