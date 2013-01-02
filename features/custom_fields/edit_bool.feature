@@ -14,7 +14,10 @@ Feature: Editing a bool custom field
   @javascript
   Scenario: Adding a localized name
     When I follow "IssueCustomField"
-    And I add the english localization of the "name" attribute as "Issue Field"
+
+    Then I should be on the edit page of the issue custom field called "IssueCustomField"
+
+    When I add the english localization of the "name" attribute as "Issue Field"
     And I add the german localization of the "name" attribute as "Ticket Feld"
     And I add the french localization of the "name" attribute as "Lorem"
     And I press "Save"
